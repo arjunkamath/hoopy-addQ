@@ -70,6 +70,67 @@ limitations under the License.
       //document.getElementById('quickstart-sign-in').disabled = true;
     }
 
+    function addQuestion(e){
+      e.preventDefault();
+      var isActive = (document.getElementById('isActive').value == 'true');
+      var imagePath = document.getElementById('imagePath').value;
+      var textEng = document.getElementById('textEng').value;
+      var textEst = document.getElementById('textEst').value;
+      var titleEng = document.getElementById('titleEng').value;
+      var titleEst = document.getElementById('titleEst').value;
+
+      var ans0correct = document.getElementById('ans0correct').value == 'true';
+      var ans0textEng = document.getElementById('ans0textEng').value;
+      var ans0textEst = document.getElementById('ans0textEst').value;
+
+      var ans1correct = document.getElementById('ans1correct').value == 'true';
+      var ans1textEng = document.getElementById('ans1textEng').value;
+      var ans1textEst = document.getElementById('ans1textEst').value;
+
+      var ans2correct = document.getElementById('ans2correct').value == 'true';
+      var ans2textEng = document.getElementById('ans2textEng').value;
+      var ans2textEst = document.getElementById('ans2textEst').value;
+
+      var ans3correct = document.getElementById('ans3correct').value == 'true';
+      var ans3textEng = document.getElementById('ans3textEng').value;
+      var ans3textEst = document.getElementById('ans3textEst').value;
+
+      var postData = {
+        active: isActive,
+        imagepath: imagePath,
+        text: textEng,
+        text_et: textEst,
+        title: titleEng,
+        title_et: titleEst,
+        answers: [ {
+          correct: ans0correct,
+          text: ans0textEng,
+          text_et: ans0textEst
+        }, {
+          correct: ans1correct,
+          text: ans1textEng,
+          text_et: ans1textEst
+        }, {
+          correct: ans2correct,
+          text: ans2textEng,
+          text_et: ans2textEst
+        }, {
+          correct: ans3correct,
+          text: ans3textEng,
+          text_et: ans3textEst
+        } ]
+      };
+
+      var newPostKey = firebase.database().ref().child('questions').push().key;
+
+      
+      console.log(imagePath);
+
+      var value = firebase.database().ref('questions/' + newPostKey).set(postData);
+      console.log('submited ' + value)
+      
+    }
+
     /**
      * initApp handles setting up UI event listeners and registering Firebase auth listeners:
      *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
@@ -106,6 +167,8 @@ limitations under the License.
           document.getElementById('quickstart-sign-in').textContent = 'Sign out';
           document.getElementById('quickstart-account-details').textContent = JSON.stringify(email, null, '  ');
           document.getElementById("writeForm").style.visibility = "visible";
+          document.getElementById('question-form').addEventListener('submit', addQuestion, false);
+
         
         } else {
           // User is signed out.
@@ -179,7 +242,7 @@ limitations under the License.
           <h2 class="mdl-card__title-text">New Entry</h2>
         </div>
         <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-          <form id="message-form" action="#">
+          <form id="question-form" action="#">
             <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
               <input class="mdl-textfield__input" type="text" id="isActive">
               <label class="mdl-textfield__label" for="new-post-title">Active? true or false</label>
